@@ -1,27 +1,16 @@
-
-const express = require("express");
 require("dotenv").config();
-
+const express = require("express");
 const app = express();
-
-app.use(express.json());
-
+const movieHandlers = require("./movieHandlers");
+const userHandlers = require("./userHandlers");
 const port = process.env.APP_PORT ?? 8000;
+app.use(express.json());
 
 const welcome = (req, res) => {
   res.send("Welcome to my favourite movie list");
 };
 
-app.get("/", welcome);
-
-const movieHandlers = require("./movieHandlers");
-const usersHandlers = require("./usersHandlers");
-
-app.get("/api/movies", movieHandlers.getMovies);
-app.get("/api/movies/:id", movieHandlers.getMovieById);
-app.get("/api/users", usersHandlers.getUsers);
-app.get("/api/users/:id", usersHandlers.getUserById);
-
+// ----------------------------Connection to server--------------------------
 app.listen(port, (err) => {
   if (err) {
     console.error("Something bad happened");
@@ -29,6 +18,15 @@ app.listen(port, (err) => {
     console.log(`Server is listening on ${port}`);
   }
 });
+// ----------------------------Routes Welcome--------------------------
+app.get("/", welcome);
 
+// ----------------------------Routes Movies--------------------------
+app.get("/api/movies", movieHandlers.getMovies);
+app.get("/api/movies/:id", movieHandlers.getMovieById);
 app.post("/api/movies", movieHandlers.postMovie);
-app.post("/api/users", usersHandlers.postUser);
+
+// ----------------------------Routes Users--------------------------
+
+app.get("/api/users", userHandlers.getUsers);
+app.post("/api/users", userHandlers.postUser);
