@@ -26,9 +26,11 @@ app.get("/api/movies", movieHandlers.getMovies);
 app.get("/api/movies/:id", movieHandlers.getMovieById);
 app.post("/api/movies", movieHandlers.postMovie);
 app.put("/api/movies/:id", movieHandlers.updateMovie);
+app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 
 // ----------------------------Routes Users--------------------------
 
 app.get("/api/users", userHandlers.getUsers);
 app.post("/api/users", userHandlers.postUser);
 app.put("/api/users/:id", movieHandlers.updateMovie);
+app.delete("/api/users/:id", movieHandlers.deleteMovie);

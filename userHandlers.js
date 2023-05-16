@@ -13,6 +13,8 @@ const getUsers = (req, res) => {
   });
 }
 
+// Crée une route GET pour le chemin /api/users/:id
+
 const getUserById = (req, res) => {
   const id = parseInt(req.params.id);
   database
@@ -30,6 +32,8 @@ const getUserById = (req, res) => {
     });
 };
 
+// Crée une route POST pour le chemin /api/users
+
 const postUser = (req, res) => {
   const { firstname, lastname, email, city, language } = req.body;
   database
@@ -41,6 +45,8 @@ const postUser = (req, res) => {
       res.location(`/api/users/${result.insertId}`).sendStatus(201);
     });
 };
+
+// Crée une route PUT pour le chemin /api/users/:id
 
 const updateUser = ( req,res ) => {
   const id = parseInt(req.params.id);
@@ -62,9 +68,29 @@ const updateUser = ( req,res ) => {
     });
   };
 
+// Crée une route DELETE pour le chemin /api/users/:id 
+
+const deleteUser = (req, res) => {
+  const id = parseInt(req.params.id);
+  database
+    .query("delete from users where id = ?", [id])
+    .then(([result]) => {
+      if (result.affectedRows === 0) { 
+        res.status(404).send("Not Found");
+      } else {
+        res.sendStatus(204);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error deleting user");
+    });
+};
+
 module.exports = {
   getUsers,
   getUserById,
   postUser,
   updateUser,
+  deleteUser,
 };
