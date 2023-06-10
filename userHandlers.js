@@ -2,17 +2,30 @@ const database = require("./database");
 
 
 const getUsers = (req, res) => {
-  database
-  .query("select * from users")
-  .then(([users]) => {
-    res.json(users);
-  })
-  .catch((err) => {
-    console.error(err);
-    res.status(500).send("Error retrieving data from database");
-  });
-}
+  let sqlReq = "select * from users";
+  let sqlQuery = [];
 
+  if (req.query.language && req.query.city) {
+    sqlReq += " where language = ? and city = ?";
+    sqlQuery.push(req.query.language, req.query.city);
+  } else if (req.query.language) {
+    sqlReq += " where language = ?";
+    sqlQuery.push(req.query.language);
+  } else if (req.query.city) {
+    sqlReq += " where city = ?";
+    sqlQuery.push(req.query.city);
+  }
+
+  database
+    .query(sqlReq, sqlQuery)
+    .then(([users]) => {
+      res.json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error retrieving data from database");
+    });
+};
 // Crée une route GET pour le chemin /api/users/:id
 
 const getUserById = (req, res) => {
