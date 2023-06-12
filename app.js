@@ -5,6 +5,7 @@ const movieHandlers = require("./movieHandlers");
 const userHandlers = require("./userHandlers");
 const port = process.env.APP_PORT ?? 8000;
 app.use(express.json());
+const {hashedPassword} = require ("./auth.js");
 
 const welcome = (req, res) => {
   res.send("Welcome to my favourite movie list");
@@ -31,6 +32,7 @@ app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 // ----------------------------Routes Users--------------------------
 
 app.get("/api/users", userHandlers.getUsers);
-app.post("/api/users", userHandlers.postUser);
-app.put("/api/users/:id", movieHandlers.updateMovie);
-app.delete("/api/users/:id", movieHandlers.deleteMovie);
+app.post("/api/users", hashedPassword,userHandlers.postUser);
+app.put("/api/users/:id", hashedPassword,userHandlers.updateUser);
+app.delete("/api/users/:id", userHandlers.deleteUser);
+

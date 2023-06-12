@@ -1,26 +1,33 @@
 const database = require("./database");
 
 const getMovies = (req, res) => {
-  let sql = "select * from movies"
-  const sqlValues =[];
+  const initialSql = "select * from movies";
+  const where = [];
 
   if (req.query.color != null) {
-    sql += " where color = ?";
-    sqlValues.push(req.query.color);
+    where.push({
+      column: "color",
+      value: req.query.color,
+      operator: "=",
+    });
   }
-
   if (req.query.max_duration != null) {
-    sql += " and duration <= ?";
-    sqlValues.push(req.query.max_duration);
+    where.push({
+      column: "duration",
+      value: req.query.max_duration,
+      operator: "<=",
+    });
   }
 
-  else if (req.query.max_duration != null) {
-    sql += " Where duration <= ?";
-    sqlValues.push(req.query.max_duration);
-  }
-
-  database
-    .query(sql, sqlValues)
+  databasSeee
+    .query(
+      where.reduce(
+        (sql, { column, operator }, index) =>
+          `${sql} ${index === 0 ? "where" : "and"} ${column} ${operator} ?`,
+        initialSql
+      ),
+      where.map(({ value }) => value)
+    )
     .then(([movies]) => {
       res.json(movies);
     })
