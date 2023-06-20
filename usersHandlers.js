@@ -26,9 +26,34 @@ const getUsers = (req, res) => {
       res.status(500).send("Error retrieving data from database");
     });
 };
+
+// Crée une route getUserByEmailWithPasswordAndPassToNext
+
+// ...
+
+const getUserByEmailWithPasswordAndPassToNext = (req, res, next) => {
+  const { email } = req.body;
+
+  database
+    .query("select * from users where email = ?", [email])
+    .then(([users]) => {
+      if (users[0] != null) {
+        req.user = users[0];
+
+        next();
+      } else {
+        res.sendStatus(401);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error retrieving data from database");
+    });
+};
+
 // Crée une route GET pour le chemin /api/users/:id
 
-const getUserById = (req, res) => {
+const getUsersById = (req, res) => {
   const id = parseInt(req.params.id);
   database
     .query(`select * from users where id = ${id}`)
@@ -102,7 +127,8 @@ const deleteUser = (req, res) => {
 
 module.exports = {
   getUsers,
-  getUserById,
+  getUserByEmailWithPasswordAndPassToNext,
+  getUsersById,
   postUser,
   updateUser,
   deleteUser,
